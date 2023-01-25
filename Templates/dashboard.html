@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block content%}
+<div class="container mt-4 text-center">
+        <div class="col-lg-6 offset-lg-3">
+            <div class="alert alert-success" role="alert">
+                Hey, {{user.name}}<br>Welcome to Expense Tracker App
+            </div>
+        </div>
+    </div>
+    <div class="container text-center mt-5">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Current balance</h5>
+                        <p class="card-text">
+                            <div class="alert alert-primary">Rs. {{currentBalance}}</div>
+                        </p>
+                        <a href="#" class="btn btn-primary">View all txn</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Income</h5>
+                        <p class="card-text">
+                            <div class="alert alert-success">Rs. {{totalIncome}}</div>
+                        </p>
+                        <a href="/all-incomes" class="btn btn-success">View all incomes</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Expense</h5>
+                        <p class="card-text">
+                            <div class="alert alert-danger">Rs. {{totalExpense}}</div>
+                        </p>
+                        <a href="/all-expenses" class="btn btn-danger">View all expenses</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5 mb-5">
+        <div class="row">
+          <div class="col-lg-6 text-center">
+            <h2>Expenses analysis</h2>
+            <canvas id="expense-pie-chart"></canvas>
+          </div>
+          <div class="col-lg-6 text-center">
+            <h2>Income analysis</h2>
+            <canvas id="income-pie-chart"></canvas>
+          </div>
+        </div>
+      </div>
+{% endblock %}
+
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script>
+        var request = new XMLHttpRequest();
+        request.open('GET','http://127.0.0.1:8000/income-analysis');
+        request.onreadystatechange = function() {
+        // Check if the request is compete and was successful
+        if(this.readyState === 4 && this.status === 200) {
+            var incomeAnalysis=JSON.parse(this.responseText)
+            console.log(incomeAnalysis)
+            var categories=[]
+            var amounts=[]
+            for(i=0;i<incomeAnalysis.length;i++){
+                categories.push(incomeAnalysis[i]['category'])
+                amounts.push(incomeAnalysis[i]['total'])
+            }
+            console.log(categories);
+            console.log(amounts);
+            var incomeConfig = {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: amounts,
+            backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)', 
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(0, 189 , 73, 0.2)',
+                        
+            ],
+            borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(0, 189 , 73, 1)'
+            ],
+            borderWidth: 1,
+            label: 'Income analysis'
+          }],
+          labels: categories
+        },
+        options: {
+          responsive: true
+        }
+      };
+      var ctx1 = document.getElementById('income-pie-chart').getContext('2d');
+        window.myPie1 = new Chart(ctx1, incomeConfig);
+        }
+    };
+        request.send();
+
+        var request = new XMLHttpRequest();
+        request.open('GET','http://127.0.0.1:8000/expense-analysis');
+        request.onreadystatechange = function() {
+        // Check if the request is compete and was successful
+        if(this.readyState === 4 && this.status === 200) {
+            var expenseAnalysis=JSON.parse(this.responseText)
+            var categories=[]
+            var amounts=[]
+            for(i=0;i<expenseAnalysis.length;i++){
+                categories.push(expenseAnalysis[i]['category'])
+                amounts.push(expenseAnalysis[i]['total'])
+            }
+            console.log(categories);
+            console.log(amounts);
+        var expenseConfig = {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: amounts,
+            backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)', 
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(22, 44, 66, 0.1)'
+            ],
+            borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(22, 44, 66, 0.1)'
+            ],
+            borderWidth: 1,
+            label: 'Expense analysis'
+          }],
+          labels: categories
+        },
+        options: {
+          responsive: true
+        }
+      };
+    }
+  };
+    request.send();
+      window.onload = function() {
+        var ctx = document.getElementById('income-pie-chart').getContext('2d');
+        window.myPie = new Chart(ctx, incomeConfig);
+
+        var ctx1 = document.getElementById('expense-pie-chart').getContext('2d');
+        window.myPie = new Chart(ctx1, expenseConfig);
+      };
+      
+    </script>    
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content%}
+    <div class="container mt-4 text-center">
+        <div class="col-lg-6 offset-lg-3">
+            <div class="alert alert-success" role="alert">
+                Welcome {{user.name}} 
+            </div>
+            <p>View all of your incomes</p>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Category</th>
+                <th scope="col">Remark</th>
+                <th scope="col">Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              {% for income in incomes  %}
+                <tr>
+                    <td>{{income.id}}</td>
+                    <td>Rs.{{income.amount}}</td>
+                    <td>{{income.date}}</td>
+                    <td>{{income.time}}</td>
+                    <td>{{income.category}}</td>
+                    <td>{{income.remark}}</td>
+                    <td><a href="/del-income/{{income.id}}" class="btn btn-danger">Delete</a> <a href="/edit-income/{{income.id}}" class="btn btn-primary">Edit</a></td>
+                </tr>
+              {% endfor %}
+                
+            </tbody>
+          </table>
+    </div>
+{% endblock %}

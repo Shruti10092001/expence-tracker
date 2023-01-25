@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content%}
+<div class="container mt-4 text-center">
+        <div class="col-lg-6 offset-lg-3">
+            <div class="alert alert-success" role="alert">
+                Welcome {{user.name}} 
+            </div>
+            <p>Edit your income</p>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <form action="/update-income/{{income.id}}" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="name" class="form-label">Amount</label>
+                  <input type="text" class="form-control" id="name" name="amount" placeholder="Enter Amount" value="{{income.amount}}">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="phone" class="form-label">Date</label>
+                  <input type="date" class="form-control" name="txn-date" id="phone" value="{{income.date}}">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="email" class="form-label">Time</label>
+                  <input type="time" class="form-control" name="txn-time" id="email" value="{{income.time}">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="password" class="form-label">Category</label>
+                  <input type="text" class="form-control" name="category" id="password" placeholder="Enter category" value="{{income.category}}">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="password" class="form-label">Remark</label>
+                  <input type="text" class="form-control" name="remark" id="password" placeholder="Enter remark" value="{{income.remark}}">
+                </div>
+              </div>
+            </div>
+            <input type="submit" value="Update Income" class="btn btn-primary">
+          </form>
+          
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content%}
+    <div class="container mt-4 text-center">
+        <div class="col-lg-6 offset-lg-3">
+            <div class="alert alert-success" role="alert">
+                Welcome {{user.name}} 
+            </div>
+            <p>Insert your income now</p>
+        </div>
+    </div>
+    <div class="container mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4">
+            <form action="/save-income" method="post">
+              {% csrf_token %}
+              {{form}}
+              <input type="submit" value="Save Income" class="btn btn-primary">
+            </form>
+          </div>
+        </div>
+      </div>          
+        </div>
+    </div>
+{% endblock %}
